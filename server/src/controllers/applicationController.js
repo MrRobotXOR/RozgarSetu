@@ -1,8 +1,6 @@
 import Application from "../models/Application.js";
 import Job from "../models/Job.js";
 
-
-
 // Apply for a job
 export const applyJob = async (req, res) => {
   try {
@@ -35,12 +33,45 @@ export const applyJob = async (req, res) => {
   }
 };
 
-// Get all applications (Admin)
-export const getApplications = async (req, res) => {
+// Withdraw Application
+export const withdrawApplication = async (
+  req,
+  res
+) => {
   try {
-    const applications = await Application.find()
-      .populate("worker")
-      .populate("job");
+    const application =
+      await Application.findOneAndDelete({
+        worker: req.user.id,
+        job: req.params.jobId,
+      });
+
+    if (!application) {
+      return res.status(404).json({
+        message: "Application not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Application withdrawn successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Get all applications (Admin)
+export const getApplications = async (
+  req,
+  res
+) => {
+  try {
+    const applications =
+      await Application.find()
+        .populate("worker")
+        .populate("job");
 
     res.status(200).json({
       success: true,
@@ -54,82 +85,100 @@ export const getApplications = async (req, res) => {
 };
 
 // Update application status
-export const updateApplicationStatus = async (req, res) => {
-  try {
-    const { status } = req.body;
+export const updateApplicationStatus =
+  async (req, res) => {
+    try {
+      const { status } = req.body;
 
-    const application = await Application.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
+      const application =
+        await Application.findByIdAndUpdate(
+          req.params.id,
+          { status },
+          { new: true }
+        );
 
-    res.status(200).json({
-      success: true,
-      application,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+      res.status(200).json({
+        success: true,
+        application,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
 
 // Get logged-in worker applications
-export const getMyApplications = async (req, res) => {
-  try {
-    const applications = await Application.find({
-      worker: req.user.id,
-    }).populate("job");
+export const getMyApplications =
+  async (req, res) => {
+    try {
+      const applications =
+        await Application.find({
+          worker: req.user.id,
+        }).populate("job");
 
-    res.status(200).json({
-      success: true,
-      applications,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
-export const getEmployerApplicants = async (req, res) => {
-  try {
+      res.status(200).json({
+        success: true,
+        applications,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
 
-    console.log("EMPLOYER ID:", req.user.id);
+// Employer Applicants
+export const getEmployerApplicants =
+  async (req, res) => {
+    try {
+      console.log(
+        "EMPLOYER ID:",
+        req.user.id
+      );
 
-    const jobs = await Job.find({
-      employer: req.user.id,
-    });
+      const jobs =
+        await Job.find({
+          employer: req.user.id,
+        });
 
-    console.log("JOBS:", jobs);
+      console.log(
+        "JOBS:",
+        jobs
+      );
 
-    const jobIds = jobs.map(job => job._id);
+      const jobIds = jobs.map(
+        (job) => job._id
+      );
 
-    console.log("JOB IDS:", jobIds);
+      console.log(
+        "JOB IDS:",
+        jobIds
+      );
 
-    const applications =
-      await Application.find({
-        job: { $in: jobIds },
-      })
-      .populate("worker")
-      .populate("job");
+      const applications =
+        await Application.find({
+          job: {
+            $in: jobIds,
+          },
+        })
+          .populate("worker")
+          .populate("job");
 
-    console.log(
-      "APPLICATIONS:",
-      applications
-    );
+      console.log(
+        "APPLICATIONS:",
+        applications
+      );
 
-    res.status(200).json({
-      success: true,
-      applications,
-    });
+      res.status(200).json({
+        success: true,
+        applications,
+      });
+    } catch (error) {
+      console.log(error);
 
-  } catch (error) {
-
-    console.log(error);
-
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };

@@ -16,13 +16,13 @@ const DashboardLayout = ({
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="h-screen flex bg-gray-100 overflow-hidden">
 
-      {/* Sidebar */}
+      {/* Fixed Sidebar */}
       <Sidebar role={role} />
 
       {/* Right Side */}
-      <div className="flex-1">
+      <div className="flex-1 ml-64 flex flex-col">
 
         {/* Header */}
         <div className="bg-white shadow p-4 flex justify-between items-center">
@@ -33,16 +33,18 @@ const DashboardLayout = ({
 
           <button
             onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded"
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
           >
             Logout
           </button>
 
         </div>
 
-        {/* Page Content */}
-        <div className="p-6">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+
           {children}
+
         </div>
 
       </div>

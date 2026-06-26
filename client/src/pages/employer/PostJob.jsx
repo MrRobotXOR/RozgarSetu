@@ -1,7 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import DashboardLayout from "../../components/dashboard/DashboardLayout";
+
 import { createJob } from "../../services/jobService";
 
 const PostJob = () => {
+
+  const navigate = useNavigate();
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("user")
+  );
 
   const [jobData, setJobData] =
     useState({
@@ -21,95 +31,139 @@ const PostJob = () => {
 
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit =
+    async (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    try {
+      try {
 
-      const data =
-        await createJob(jobData);
+        const data =
+          await createJob(
+            jobData
+          );
 
-      console.log(data);
+        console.log(data);
 
-      alert(
-        "Job Posted Successfully"
-      );
+        alert(
+          "Job Posted Successfully"
+        );
 
-      setJobData({
-        title: "",
-        description: "",
-        location: "",
-        salary: "",
-      });
+        setJobData({
+          title: "",
+          description: "",
+          location: "",
+          salary: "",
+        });
 
-    } catch (error) {
+        navigate(
+          "/employer/dashboard"
+        );
 
-      console.log(
-        error.response?.data
-      );
+      } catch (error) {
 
-    }
-  };
+        console.log(
+          error.response?.data
+        );
+
+      }
+
+    };
 
   return (
-    <div>
 
-      <h1>
-        Post New Job
-      </h1>
+    <DashboardLayout
+      role={currentUser?.role}
+    >
 
-      <form
-        onSubmit={handleSubmit}
-      >
+      <div className="min-h-full flex items-center justify-center px-6 py-10">
 
-        <input
-          type="text"
-          name="title"
-          placeholder="Job Title"
-          value={jobData.title}
-          onChange={handleChange}
-        />
+        <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-8">
 
-        <br /><br />
+          <h1 className="text-3xl font-bold text-center text-gray-800">
 
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={jobData.description}
-          onChange={handleChange}
-        />
+            Post New{" "}
 
-        <br /><br />
+            <span className="text-teal-700">
+              Job
+            </span>
 
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={jobData.location}
-          onChange={handleChange}
-        />
+          </h1>
 
-        <br /><br />
+          <form
+            onSubmit={
+              handleSubmit
+            }
+            className="mt-8 space-y-5"
+          >
 
-        <input
-          type="number"
-          name="salary"
-          placeholder="Salary"
-          value={jobData.salary}
-          onChange={handleChange}
-        />
+            <input
+              type="text"
+              name="title"
+              placeholder="Job Title"
+              value={jobData.title}
+              onChange={
+                handleChange
+              }
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-700"
+            />
 
-        <br /><br />
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={
+                jobData.description
+              }
+              onChange={
+                handleChange
+              }
+              rows={5}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-700 resize-none"
+            />
 
-        <button type="submit">
-          Post Job
-        </button>
+            <input
+              type="text"
+              name="location"
+              placeholder="Location"
+              value={
+                jobData.location
+              }
+              onChange={
+                handleChange
+              }
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-700"
+            />
 
-      </form>
+            <input
+              type="text"
+              name="salary"
+              placeholder="e.g. ₹10,000 - ₹20,000 / month"
+              value={
+                jobData.salary
+              }
+              onChange={
+                handleChange
+              }
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-700"
+            />
 
-    </div>
+            <button
+              type="submit"
+              className="w-full bg-teal-700 text-white py-3 rounded-lg font-semibold hover:bg-teal-800 transition"
+            >
+              Post Job
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </DashboardLayout>
+
   );
+
 };
 
 export default PostJob;
