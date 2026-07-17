@@ -306,12 +306,6 @@ This project is developed for educational and portfolio purposes.
 
 ---
 
-# 👨‍💻 Developer
-
-**Shubham Kurhade**
-
-B.Tech Computer Engineering Student
-
 ### Skills
 
 - MERN Stack
