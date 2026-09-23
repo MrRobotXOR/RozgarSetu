@@ -279,7 +279,7 @@ Worker Profile
 - Email Notifications
 - Last Seen
 - Read Receipts
-- Dark Mode
+
 
 ---
 
